@@ -11,7 +11,6 @@ void  ai(int &x, int &y, int board[15][15], int n);
 void  value(int board[15][15], int valueboard[15][15], int n);
 void sort(int a[], int n);
 void iboard(int board[15][15]);
-int score(int c, int die);
 int main()
 {
 	int x, y, round = 1;
@@ -227,10 +226,42 @@ void  ai(int &x, int &y, int board[15][15], int n)
 	for (i = 0; i <= 14; i++)
 		for (j = 0; j <= 14; j++)
 		{
-			if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
-				valueboard[i][j] = -100;
-			else
-				valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+			if (n == 1)
+			{
+				if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
+					valueboard[i][j] = -10;
+				else if (bvalueboard[i][j] == 4)
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 100;
+				else if (wvalueboard[i][j] == 4)
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 50;
+				else if (wvalueboard[i][j] == 3)
+				{
+					if ((board[i + 1][j] == 1 && board[i + 4][j] == 0) || (board[i - 1][j] == 1 && board[i - 4][j] == 0) || (board[i][j + 1] == 1 && board[i][j + 4] == 0) || (board[i][j - 1] == 1 && board[i][j - 4] == 0) || (board[i - 1][j - 1] == 1 && board[i - 4][j - 4] == 0) || (board[i + 1][j + 1] == 1 && board[i + 4][j + 4] == 0) || (board[i + 1][j - 1] == 1 && board[i + 4][j - 4] == 0) || (board[i - 1][j + 1] == 1 && board[i - 4][j + 4] == 0))
+						valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 30;
+					else
+						valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+				}
+				else
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+			}
+			if (n == -1)
+			{
+				if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
+					valueboard[i][j] = -10;
+				else if (wvalueboard[i][j] == 4)
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 100;
+				else if (bvalueboard[i][j] == 4)
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 50;
+				else if (bvalueboard[i][j] == 3)
+				{
+					if ((board[i + 1][j] == 1 && board[i + 4][j] == 0) || (board[i - 1][j] == 1 && board[i - 4][j] == 0) || (board[i][j + 1] == 1 && board[i][j + 4] == 0) || (board[i][j - 1] == 1 && board[i][j - 4] == 0) || (board[i - 1][j - 1] == 1 && board[i - 4][j - 4] == 0) || (board[i + 1][j + 1] == 1 && board[i + 4][j + 4] == 0) || (board[i + 1][j - 1] == 1 && board[i + 4][j - 4] == 0) || (board[i - 1][j + 1] == 1 && board[i - 4][j + 4] == 0))
+						valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j] + 30;
+					else
+						valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+				}
+				else
+					valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+			}
 		}
 	for (i = 0; i <= 14; i++)
 		for (j = 0; j <= 14; j++)
@@ -269,159 +300,338 @@ void  ai(int &x, int &y, int board[15][15], int n)
 
 void  value(int board[15][15], int valueboard[15][15], int n)
 {
-	int x, y, i, j, hs = 0, k;
-	int max[4] = { 0 }, c[8] = { 0 }, die[8] = { 0 };
-	for (x = 0; x <= 14; x++)
-		for (y = 0; y <= 14; y++)
-			if (board[x][y] == 0)
-				valueboard[x][y] = 0;
+	int i, j, k, t;
+	int max[5] = { 0 };
+	for (i = 0; i <= 14; i++)
+		for (j = 0; j <= 14; j++)
+			if (board[i][j] == 0)
+				valueboard[i][j] = 0;
 			else
-				valueboard[x][y] = -10;
-
-	for (x = 0; x <= 14; x++)
-		for (y = 0; y <= 14; y++)
-		{
-			if (valueboard[x][y] != -10)
+				valueboard[i][j] = -10;
+	//ºá
+	for (i = 0; i <= 14; i++)
+		for (j = 0; j <= 14; j++)
+			if (valueboard[i][j] != -10)
 			{
-				//ºá
-				for (i = -1;; i--)
+				for (k = 0; k <= 4; k++)//1
 				{
-					if (y + i <= 14 && y + i >= 0)
+					if (k == 0) continue;
+					if (j + k <= 14 && j + k >= 0)
 					{
-						if (n == board[x][y + i])
-							c[0]++;
-						else
+						if (board[i][j + k] == -n)
+						{
+							max[0] = 0;
 							break;
+						}
+						else if (board[i][j + k] == n)
+							max[0]++;
 					}
-					else
-						break;
 				}
-				if (board[x][y + i] == -n)
-					die[0]++;
-				for (i = 1;; i++)
+				for (k = -1; k <= 3; k++)//2
 				{
-					if (y + i <= 14 && y + i >= 0)
+					if (k == 0) continue;
+					if (j + k <= 14 && j + k >= 0)
 					{
-						if (n == board[x][y + i])
-							c[1]++;
-						else
+						if (board[i][j + k] == -n)
+						{
+							max[1] = 0;
 							break;
+						}
+						else if (board[i][j + k] == n)
+							max[1]++;
 					}
-					else
-						break;
 				}
-				if (board[x][y + i] == -n)
-					die[1]++;
-				max[0] = score(c[0] + c[1], die[0] + die[1]);
-
-				//Êú
-				for (i = -1;; i--)
+				for (k = -2; k <= 2; k++)//3
 				{
-					if (x + i <= 14 && x + i >= 0)
-					{
-						if (n == board[x + i][y])
-							c[2]++;
-						else
+					if (k == 0) continue;
+					if (j + k <= 14 && j + k >= 0){
+						if (board[i][j + k] == -n)
+						{
+							max[2] = 0;
 							break;
+						}
+						else if (board[i][j + k] == n)
+							max[2]++;
 					}
-					else
-						break;
 				}
-				if (board[x + i][y] == -n)
-					die[2]++;
-				for (i = 1;; i++)
+				for (k = -3; k <= 1; k++)//4
 				{
-					if (x + i <= 14 && x + i >= 0)
+					if (k == 0) continue;
+					if (j + k <= 14 && j + k >= 0)
 					{
-						if (n == board[x + i][y])
-							c[3]++;
-						else
+						if (board[i][j + k] == -n)
+						{
+							max[3] = 0;
 							break;
+						}
+						else if (board[i][j + k] == n)
+							max[3]++;
 					}
-					else
-						break;
 				}
-				if (board[x + i][y] == -n)
-					die[3]++;
-				max[1] = score(c[2] + c[3], die[2] + die[3]);
-
-				//×óÉÏµ½ÓÒÏÂ
-				for (i = -1, j = -1;; i--, j--)
+				for (k = -4; k <= 0; k++)//5
 				{
-					if (x + i <= 14 && x + i >= 0 && y + j <= 14 && y + j >= 0)
+					if (k == 0) continue;
+					if (j + k <= 14 && j + k >= 0)
 					{
-						if (n == board[x + i][y + j])
-							c[4]++;
-						else
+						if (board[i][j + k] == -n)
+						{
+							max[4] = 0;
 							break;
+						}
+						else if (board[i][j + k] == n)
+							max[4]++;
 					}
-					else
-						break;
 				}
-				if (board[x + i][y + j] == -n)
-					die[4]++;
-				for (i = 1, j = 1;; i++, j++)
-				{
-					if (x + i <= 14 && x + i >= 0 && y + j <= 14 && y + j >= 0)
-					{
-						if (n == board[x + i][y + j])
-							c[5]++;
-						else
-							break;
-					}
-					else
-						break;
-				}
-				if (board[x + i][y + j] == -n)
-					die[5]++;
-				max[2] = score(c[4] + c[5], die[4] + die[5]);
-
-				//ÓÒÉÏµ½×óÏÂ
-				for (i = 1, j = -1;; i++, j--)
-				{
-					if (x + i <= 14 && x + i >= 0 && y + j <= 14 && y + j >= 0)
-					{
-						if (n == board[x + i][y + j])
-							c[6]++;
-						else
-							break;
-					}
-					else
-						break;
-				}
-				if (board[x + i][y + j] == -n)
-					die[6]++;
-				for (i = -1, j = 1;; i--, j++)
-				{
-					if (x + i <= 14 && x + i >= 0 && y + j <= 14 && y + j >= 0)
-					{
-						if (n == board[x + i][y + j])
-							c[7]++;
-						else
-							break;
-					}
-					else
-						break;
-				}
-				if (board[x + i][y + j] == -n)
-					die[7]++;
-				max[3] = score(c[6] + c[7], die[6] + die[7]);
-				sort(max, 4);
-				for (k = 0; k <= 7; k++)
-					if (c[k] + 1 == 3)
-						if (die[k] == 0)
-							hs++;
-				if (hs >= 2)
-					valueboard[x][y] = 5000;
-				else
-					valueboard[x][y] = max[0];
-				for (k = 0; k <= 7; k++)
-					c[k] = 0;
-				for (k = 0; k <= 7; k++)
-					die[k] = 0;
-				hs = 0;
+				sort(max, 5);
+				if (max[0]>valueboard[i][j])
+					valueboard[i][j] = max[0];
+				for (t = 0; t < 5; t++)//¹éÁã
+					max[t] = 0;
 			}
-		}
+	//Êú
+	for (i = 0; i <= 14; i++)
+		for (j = 0; j <= 14; j++)
+			if (valueboard[i][j] != -10)
+			{
+				for (k = 0; k <= 4; k++)//1
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0)
+					{
+						if (board[i + k][j] == -n)
+						{
+							max[0] = 0;
+							break;
+						}
+						else if (board[i + k][j] == n)
+							max[0]++;
+					}
+				}
+				for (k = -1; k <= 3; k++)//2
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0)
+					{
+						if (board[i + k][j] == -n)
+						{
+							max[1] = 0;
+							break;
+						}
+						else if (board[i + k][j] == n)
+							max[1]++;
+					}
+				}
+				for (k = -2; k <= 2; k++)//3
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0)
+					{
+						if (board[i + k][j] == -n)
+						{
+							max[2] = 0;
+							break;
+						}
+						else if (board[i + k][j] == n)
+							max[2]++;
+					}
+				}
+				for (k = -3; k <= 1; k++)//4
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0)
+					{
+						if (board[i + k][j] == -n)
+						{
+							max[3] = 0;
+							break;
+						}
+						else if (board[i + k][j] == n)
+							max[3]++;
+					}
+				}
+				for (k = -4; k <= 0; k++)//5
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0)
+					{
+						if (board[i + k][j] == -n)
+						{
+							max[4] = 0;
+							break;
+						}
+						else if (board[i + k][j] == n)
+							max[4]++;
+					}
+				}
+				sort(max, 5);
+				if (max[0]>valueboard[i][j])
+					valueboard[i][j] = max[0];
+				for (t = 0; t < 5; t++)//¹éÁã
+					max[t] = 0;
+			}
+	//ÓÒÉÏµ½×óÏÂ
+	for (i = 0; i <= 14; i++)
+		for (j = 0; j <= 14; j++)
+			if (valueboard[i][j] != -10)
+			{
+				for (k = 0; k <= 4; k++)//1
+				{
+					if (k == 0) continue;
+					if (i - k <= 14 && i - k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i - k][j + k] == -n)
+						{
+							max[0] = 0;
+							break;
+						}
+						else if (board[i - k][j + k] == n)
+							max[0]++;
+					}
+				}
+				for (k = -1; k <= 3; k++)//2
+				{
+					if (k == 0) continue;
+					if (i - k <= 14 && i - k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i - k][j + k] == -n)
+						{
+							max[1] = 0;
+							break;
+						}
+						else if (board[i - k][j + k] == n)
+							max[1]++;
+					}
+				}
+				for (k = -2; k <= 2; k++)//3
+				{
+					if (k == 0) continue;
+					if (i - k <= 14 && i - k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i - k][j + k] == -n)
+						{
+							max[2] = 0;
+							break;
+						}
+						else if (board[i - k][j + k] == n)
+							max[2]++;
+					}
+				}
+				for (k = -3; k <= 1; k++)//4
+				{
+					if (k == 0) continue;
+					if (i - k <= 14 && i - k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i - k][j + k] == -n)
+						{
+							max[3] = 0;
+							break;
+						}
+						else if (board[i - k][j + k] == n)
+							max[3]++;
+					}
+				}
+				for (k = -4; k <= 0; k++)//5
+				{
+					if (k == 0) continue;
+					if (i - k <= 14 && i - k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i - k][j + k] == -n)
+						{
+							max[4] = 0;
+							break;
+						}
+						else if (board[i - k][j + k] == n)
+							max[4]++;
+					}
+				}
+				sort(max, 5);
+				if (max[0]>valueboard[i][j])
+					valueboard[i][j] = max[0];
+				for (t = 0; t < 5; t++)//¹éÁã
+					max[t] = 0;
+			}
+	//×óÉÏµ½ÓÒÏÂ
+	for (i = 0; i <= 14; i++)
+		for (j = 0; j <= 14; j++)
+			if (valueboard[i][j] != -10)
+			{
+				for (k = 0; k <= 4; k++)//1
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i + k][j + k] == -n)
+						{
+							max[0] = 0;
+							break;
+						}
+						else if (board[i + k][j + k] == n)
+							max[0]++;
+					}
+				}
+				for (k = -1; k <= 3; k++)//2
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i + k][j + k] == -n)
+						{
+							max[1] = 0;
+							break;
+						}
+						else if (board[i + k][j + k] == n)
+							max[1]++;
+					}
+				}
+				for (k = -2; k <= 2; k++)//3
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i + k][j + k] == -n)
+						{
+							max[2] = 0;
+							break;
+						}
+						else if (board[i + k][j + k] == n)
+							max[2]++;
+					}
+				}
+				for (k = -3; k <= 1; k++)//4
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i + k][j + k] == -n)
+						{
+							max[3] = 0;
+							break;
+						}
+						else if (board[i + k][j + k] == n)
+							max[3]++;
+					}
+				}
+				for (k = -4; k <= 0; k++)//5
+				{
+					if (k == 0) continue;
+					if (i + k <= 14 && i + k >= 0 && j + k <= 14 && j + k >= 0)
+					{
+						if (board[i + k][j + k] == -n)
+						{
+							max[4] = 0;
+							break;
+						}
+						else if (board[i + k][j + k] == n)
+							max[4]++;
+					}
+				}
+				sort(max, 5);
+				if (max[0]>valueboard[i][j])
+					valueboard[i][j] = max[0];
+				for (t = 0; t < 5; t++)//¹éÁã
+					max[t] = 0;
+			}
+
 }
 
 void sort(int a[], int n)
@@ -461,41 +671,5 @@ void iboard(int board[15][15])
 				printf("¡ð ");
 		}
 		cout << endl;
-	}
-}
-int score(int c, int die)
-{
-	c = c + 1;
-	if (c >= 5)
-		return 100000;
-	else
-	{
-		if (die >= 2)
-			return 10;
-		else
-		{
-			if (die == 0)
-			{
-				if (c == 1)
-					return 1;
-				if (c == 2)
-					return 100;
-				else if (c == 3)
-					return 1000;
-				else if (c == 4)
-					return 10000;
-			}
-			else if (die == 1)
-			{
-				if (c == 1)
-					return 1;
-				if (c == 2)
-					return 10;
-				else if (c == 3)
-					return 100;
-				else if (c == 4)
-					return 1000;
-			}
-		}
 	}
 }
