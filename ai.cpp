@@ -21,11 +21,31 @@ void  ai::robot(int &x, int &y, int board[15][15])
 	value(board, bvalueboard, 1);
 	for (i = 0; i <= 14; i++)
 		for (j = 0; j <= 14; j++)
-		{
-			if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
-				valueboard[i][j] = -100;
-			else
-				valueboard[i][j] = bvalueboard[i][j] + wvalueboard[i][j];
+		{	
+			if (player == 1)
+			{
+				if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
+					valueboard[i][j] = -100;
+				else
+				{
+					if (wvalueboard[i][j]<=10)
+						valueboard[i][j] =bvalueboard[i][j];
+					else
+						valueboard[i][j] = (bvalueboard[i][j] + 10) + wvalueboard[i][j];
+				}
+			}
+			if (player == -1)
+			{
+				if (bvalueboard[i][j] == -10 && wvalueboard[i][j] == -10)
+					valueboard[i][j] = -100;
+				else
+				{
+					if (bvalueboard[i][j] <= 10)
+						valueboard[i][j] = wvalueboard[i][j];
+					else
+						valueboard[i][j] = (wvalueboard[i][j] + 10) + bvalueboard[i][j];
+				}
+			}
 		}
 	for (i = 0; i <= 14; i++)
 		for (j = 0; j <= 14; j++)

@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstdio>
 #include<string>
+#include <windows.h>
 #include"ai.h"
 #include"chess.h"
 using namespace std;
@@ -167,6 +168,38 @@ int main()
 					cout << "平局！";
 					break;
 				}
+			}
+		}
+		else if (model == "ai")
+		{
+			black.show(board);
+			bbot.robot(x, y, board);
+			black.input(x - 1, y - 1, board);
+			black.show(board);
+			if (black.judgewin(board) == 1)
+			{
+				cout << "黑棋赢了！";
+				break;
+			}
+			if (draw(board) == 1)
+			{
+				cout << "平局！";
+				break;
+			}
+			
+			white.show(board);
+			wbot.robot(x, y, board);
+			white.input(x - 1, y - 1, board);
+			white.show(board);
+			if (black.judgewin(board) == 1)
+			{
+				cout << "白棋赢了！";
+				break;
+			}
+			if (draw(board) == 1)
+			{
+				cout << "平局！";
+				break;
 			}
 		}
 	}
