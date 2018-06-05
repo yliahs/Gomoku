@@ -186,7 +186,7 @@ int main()
 				cout << "Æ½¾Ö£¡";
 				break;
 			}
-			
+			Sleep(1000);
 			white.show(board);
 			wbot.robot(x, y, board);
 			white.input(x - 1, y - 1, board);
